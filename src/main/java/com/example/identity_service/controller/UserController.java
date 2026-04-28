@@ -17,14 +17,18 @@ import com.example.identity_service.dto.request.UserUpdateRequest;
 import com.example.identity_service.entity.User;
 import com.example.identity_service.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService userService;
 
+    // @Valid thông báo cho sp boot rằng chúng ta muốn thực hiện validate đối với
+    // request body, dựa theo những rule đã đc define
     @PostMapping
-    public User createUser(@RequestBody UserCreationRequest request) {
+    public User createUser(@RequestBody @Valid UserCreationRequest request) {
         return userService.createUser(request);
     }
 

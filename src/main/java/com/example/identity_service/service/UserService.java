@@ -18,6 +18,10 @@ public class UserService {
     public User createUser(UserCreationRequest request) {
         User user = new User();
 
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
         user.setFirstName(request.getFirstName());
@@ -32,13 +36,13 @@ public class UserService {
     }
 
     public User getUserById(String id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     public User updateUser(UserUpdateRequest user, String userId) {
         User existingUser = getUserById(userId);
         if (existingUser == null) {
-            return null; // Or throw an exception
+            throw new RuntimeException("User not found");
         }
 
         existingUser.setPassword(user.getPassword());
