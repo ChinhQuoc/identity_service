@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.identity_service.dto.request.ApiResponse;
 import com.example.identity_service.dto.request.UserCreationRequest;
 import com.example.identity_service.dto.request.UserUpdateRequest;
 import com.example.identity_service.entity.User;
@@ -28,8 +29,10 @@ public class UserController {
     // @Valid thông báo cho sp boot rằng chúng ta muốn thực hiện validate đối với
     // request body, dựa theo những rule đã đc define
     @PostMapping
-    public User createUser(@RequestBody @Valid UserCreationRequest request) {
-        return userService.createUser(request);
+    public ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request) {
+        ApiResponse apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.createUser(request));
+        return apiResponse;
     }
 
     @GetMapping
