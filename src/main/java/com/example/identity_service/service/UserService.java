@@ -2,6 +2,8 @@ package com.example.identity_service.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.identity_service.dto.request.UserCreationRequest;
@@ -27,7 +29,22 @@ public class UserService {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTS);
         }
+
         User user = userMapper.toUser(request);
+        /*
+         * PasswordEncoder là một interface trong Spring Security được sử dụng để mã hóa
+         * mật khẩu người dùng trước khi lưu vào cơ sở dữ liệu.
+         * BCryptPasswordEncoder là một trong những triển khai phổ biến của
+         * PasswordEncoder, sử dụng thuật toán bcrypt để mã hóa mật khẩu,
+         * cung cấp tính bảo mật cao và khả năng chống lại các cuộc tấn công
+         * brute-force.
+         * 
+         * 10 là độ mạnh của thuật toán bcrypt, càng cao thì mật khẩu càng khó bị bẻ
+         * khóa, nhưng cũng sẽ tốn nhiều thời gian hơn để mã hóa và xác thực mật khẩu.
+         */
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
         return userRepository.save(user);
     }
 
