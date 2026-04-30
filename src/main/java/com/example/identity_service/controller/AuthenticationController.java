@@ -23,8 +23,12 @@ public class AuthenticationController {
     @PostMapping("/login")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         boolean isAuthenticated = authenticationService.authenticate(request);
-        return ApiResponse.<AuthenticationResponse>builder()
-                .result(AuthenticationResponse.builder().authenticated(isAuthenticated).build())
-                .build();
+        // builder pattern giúp code gọn hơn, dễ đọc hơn, tránh lỗi khi có nhiều field
+        return ApiResponse.<AuthenticationResponse>builder() // Start building ApiResponse
+                .result( // Set the result field
+                        AuthenticationResponse.builder() // Start building AuthenticationResponse
+                                .authenticated(isAuthenticated) // Set authenticated field
+                                .build()) // Finish AuthenticationResponse
+                .build(); // Finish ApiResponse
     }
 }
