@@ -2,6 +2,7 @@ package com.example.identity_service.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,16 +16,17 @@ import com.example.identity_service.dto.request.ApiResponse;
 import com.example.identity_service.dto.request.UserCreationRequest;
 import com.example.identity_service.dto.request.UserUpdateRequest;
 import com.example.identity_service.dto.response.UserResponse;
-import com.example.identity_service.entity.User;
 import com.example.identity_service.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 @RequestMapping("/users")
 public class UserController {
     UserService userService;
@@ -32,14 +34,20 @@ public class UserController {
     // @Valid thông báo cho sp boot rằng chúng ta muốn thực hiện validate đối với
     // request body, dựa theo những rule đã đc define
     @PostMapping
-    public ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request) {
-        ApiResponse apiResponse = new ApiResponse<>();
+    public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
+        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.createUser(request));
         return apiResponse;
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
+        // SecurityContextHolder để lấy info user đang thực hiện request
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+
         return userService.getAllUsers();
     }
 
