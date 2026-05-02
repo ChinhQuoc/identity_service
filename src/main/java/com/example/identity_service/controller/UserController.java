@@ -41,29 +41,42 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserResponse> getAllUsers() {
+    public ApiResponse<List<UserResponse>> getAllUsers() {
         // SecurityContextHolder để lấy info user đang thực hiện request
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         log.info("Username: {}", authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
 
-        return userService.getAllUsers();
+        return ApiResponse.<List<UserResponse>>builder()
+                .result(userService.getAllUsers()).build();
     }
 
     @GetMapping("/{userId}")
-    public UserResponse getUserById(@PathVariable("userId") String userId) {
-        return userService.getUserById(userId);
+    public ApiResponse<UserResponse> getUserById(@PathVariable("userId") String userId) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getUserById(userId))
+                .build();
     }
 
     @PutMapping("/{userId}")
-    public UserResponse updateUser(@RequestBody UserUpdateRequest request, @PathVariable("userId") String userId) {
-        return userService.updateUser(request, userId);
+    public ApiResponse<UserResponse> updateUser(@RequestBody UserUpdateRequest request,
+            @PathVariable("userId") String userId) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateUser(request, userId))
+                .build();
     }
 
     @DeleteMapping("/{userId}")
-    public String deleteUser(@PathVariable("userId") String userId) {
+    public ApiResponse<String> deleteUser(@PathVariable("userId") String userId) {
         userService.deleteUser(userId);
-        return "User has been deleted successfully.";
+        return ApiResponse.<String>builder()
+                .result("User has been deleted successfully.")
+                .build();
+    }
+
+    @GetMapping("/me")
+    public ApiResponse<UserResponse> getMyInfo() {
+        return ApiResponse.<UserResponse>builder().result(userService.getMyInfo()).build();
     }
 }

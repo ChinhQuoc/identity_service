@@ -3,6 +3,9 @@ package com.example.identity_service.service;
 import java.util.HashSet;
 import java.util.List;
 
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +21,12 @@ import com.example.identity_service.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
@@ -53,11 +58,18 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
+    // Trước lúc gọi fun thì user phải có role là ADMIN
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getAllUsers() {
+        log.info("Getting all users");
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
+    // PostAuthorize sẽ kiểm tra sau khi fun đã được thực thi
+    // Chỉ cho phép người dùng truy cập thông tin của chính họ
+    @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getUserById(String id) {
+        log.info("In method getuserByID");
         return userMapper
                 .toUserResponse(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
     }
@@ -73,5 +85,13 @@ public class UserService {
 
     public void deleteUser(String userId) {
         userRepository.deleteById(userId);
+    }
+
+    public UserResponse getMyInfo() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS));
+
+        return userMapper.toUserResponse(user);
     }
 }
