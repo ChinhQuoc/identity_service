@@ -14,8 +14,8 @@ import com.example.identity_service.entity.User;
 public interface UserMapper {
     User toUser(UserCreationRequest request);
 
-    @Mapping(source = "firstName", target = "lastName")
     UserResponse toUserResponse(User user);
 
+    @Mapping(target = "roles", ignore = true) // ignore trường roles vì chúng ta sẽ set thủ công trong service
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 }

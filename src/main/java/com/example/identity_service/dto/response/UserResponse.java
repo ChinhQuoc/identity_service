@@ -3,8 +3,6 @@ package com.example.identity_service.dto.response;
 import java.time.LocalDate;
 import java.util.Set;
 
-import com.example.identity_service.entity.Role;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +20,5 @@ public class UserResponse {
     String firstName;
     String lastName;
     LocalDate dob;
-    Set<Role> roles;
+    Set<RoleResponse> roles;
 }
