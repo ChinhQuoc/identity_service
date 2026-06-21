@@ -8,22 +8,22 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class DobValidator implements ConstraintValidator<DobConstraint, LocalDate> {
-    private int min;
+	private int min;
 
-    @Override
-    public boolean isValid(LocalDate arg0, ConstraintValidatorContext arg1) {
-        if (Objects.isNull(arg0)) {
-            return true;
-        }
+	@Override
+	public boolean isValid(LocalDate arg0, ConstraintValidatorContext arg1) {
+		if (Objects.isNull(arg0)) {
+			return true;
+		}
 
-        long years = ChronoUnit.YEARS.between(arg0, LocalDate.now());
+		long years = ChronoUnit.YEARS.between(arg0, LocalDate.now());
 
-        return years >= min;
-    }
+		return years >= min;
+	}
 
-    @Override
-    public void initialize(DobConstraint constraintAnnotation) {
-        ConstraintValidator.super.initialize(constraintAnnotation);
-        this.min = constraintAnnotation.min();
-    }
+	@Override
+	public void initialize(DobConstraint constraintAnnotation) {
+		ConstraintValidator.super.initialize(constraintAnnotation);
+		this.min = constraintAnnotation.min();
+	}
 }

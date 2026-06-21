@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class RoleRequest {
-    String name;
-    String description;
-    Set<String> permissions;
+	String name;
+	String description;
+	Set<String> permissions;
 }

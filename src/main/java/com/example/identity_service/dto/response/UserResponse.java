@@ -15,10 +15,10 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class UserResponse {
-    String id;
-    String username;
-    String firstName;
-    String lastName;
-    LocalDate dob;
-    Set<RoleResponse> roles;
+	String id;
+	String username;
+	String firstName;
+	String lastName;
+	LocalDate dob;
+	Set<RoleResponse> roles;
 }

@@ -12,10 +12,10 @@ import com.example.identity_service.entity.User;
 // MapStruct sẽ tự động generate code cho interface này để map giữa các object với nhau, ví dụ UserCreationRequest -> User, User -> UserResponse, ...
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    User toUser(UserCreationRequest request);
+	User toUser(UserCreationRequest request);
 
-    UserResponse toUserResponse(User user);
+	UserResponse toUserResponse(User user);
 
-    @Mapping(target = "roles", ignore = true) // ignore trường roles vì chúng ta sẽ set thủ công trong service
-    void updateUser(@MappingTarget User user, UserUpdateRequest request);
+	@Mapping(target = "roles", ignore = true) // ignore trường roles vì chúng ta sẽ set thủ công trong service
+	void updateUser(@MappingTarget User user, UserUpdateRequest request);
 }

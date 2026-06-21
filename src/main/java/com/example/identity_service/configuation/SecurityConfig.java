@@ -18,52 +18,52 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS = { "/users", "/auth/token", "/auth/introspect", "/auth/logout",
-            "/auth/refresh" };
+	private final String[] PUBLIC_ENDPOINTS = { "/users", "/auth/token", "/auth/introspect", "/auth/logout",
+			"/auth/refresh" };
 
-    @Autowired
-    private CustomeJwtDecoder customeJwtDecoder;
+	@Autowired
+	private CustomeJwtDecoder customeJwtDecoder;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        /*
-         * Allow unauthenticated access to the POST /users endpoint for user
-         * registration
-         */
-        httpSecurity.authorizeHttpRequests(
-                request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
-                        .permitAll()
-                        // All other requests require authentication
-                        .anyRequest().authenticated());
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+		/*
+		 * Allow unauthenticated access to the POST /users endpoint for user
+		 * registration
+		 */
+		httpSecurity.authorizeHttpRequests(
+				request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
+						.permitAll()
+						// All other requests require authentication
+						.anyRequest().authenticated());
 
-        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigure -> jwtConfigure.decoder(customeJwtDecoder)
-                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
+		httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigure -> jwtConfigure.decoder(customeJwtDecoder)
+				.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+				.authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
 
-        /*
-         * Disable CSRF protection
-         * httpSecurity.csrf(httpSecurityCsrfConfigurer ->
-         * httpSecurityCsrfConfigurer.disable());
-         * dưới là cách viết gọn hơn với lambda expression
-         */
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+		/*
+		 * Disable CSRF protection
+		 * httpSecurity.csrf(httpSecurityCsrfConfigurer ->
+		 * httpSecurityCsrfConfigurer.disable());
+		 * dưới là cách viết gọn hơn với lambda expression
+		 */
+		httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
-        return httpSecurity.build();
-    }
+		return httpSecurity.build();
+	}
 
-    @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+	@Bean
+	JwtAuthenticationConverter jwtAuthenticationConverter() {
+		JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+		jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
 
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
 
-        return jwtAuthenticationConverter;
-    }
+		return jwtAuthenticationConverter;
+	}
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder(10);
+	}
 }

@@ -17,7 +17,7 @@ import lombok.experimental.FieldDefaults;
 // response gọn hơn
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
-    int code = 201;
-    String message;
-    T result;
+	int code = 201;
+	String message;
+	T result;
 }

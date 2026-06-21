@@ -15,9 +15,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class UserUpdateRequest {
-    String password;
-    String firstName;
-    String lastName;
-    LocalDate dob;
-    List<String> roles;
+	String password;
+	String firstName;
+	String lastName;
+	LocalDate dob;
+	List<String> roles;
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,15 +20,15 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
-    String username;
-    String password;
-    String firstName;
-    String lastName;
-    LocalDate dob;
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	String id;
+	String username;
+	String password;
+	String firstName;
+	String lastName;
+	LocalDate dob;
 
-    @ManyToMany
-    Set<Role> roles;
+	@ManyToMany
+	Set<Role> roles;
 }

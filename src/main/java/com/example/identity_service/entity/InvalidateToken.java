@@ -4,6 +4,7 @@ import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
 public class InvalidateToken {
-    @Id
-    String id;
-    Date expireTime;
+	@Id
+	String id;
+	Date expireTime;
 }

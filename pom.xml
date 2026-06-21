@@ -111,6 +111,27 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>2.43.0</version>
+				<configuration>
+					<java>
+						<removeUnusedImports />
+						<toggleOffOn/>
+						<trimTrailingWhitespace/>
+						<endWithNewline/>
+						<indent>
+							<tabs>true</tabs>
+							<spacesPerTab>4</spacesPerTab>
+						</indent>
+						<importOrder>
+							<!-- Specify either order or file, but not both -->
+							<order>java,jakarta,org,com,com.diffplug,</order>
+						</importOrder>
+					</java>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
