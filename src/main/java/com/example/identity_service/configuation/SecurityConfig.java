@@ -13,6 +13,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -31,10 +37,14 @@ public class SecurityConfig {
 		 * registration
 		 */
 		httpSecurity.authorizeHttpRequests(
-				request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
+				request -> request.requestMatchers(HttpMethod.OPTIONS, "/**")
+						.permitAll()
+						.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
 						.permitAll()
 						// All other requests require authentication
 						.anyRequest().authenticated());
+
+		httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
 		httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigure -> jwtConfigure.decoder(customeJwtDecoder)
 				.jwtAuthenticationConverter(jwtAuthenticationConverter()))
@@ -66,4 +76,38 @@ public class SecurityConfig {
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);
 	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration corsConfiguration = new CorsConfiguration();
+		corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000"));
+		corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+		corsConfiguration.setAllowedHeaders(List.of("*"));
+		corsConfiguration.setAllowCredentials(true);
+		corsConfiguration.setExposedHeaders(List.of("Authorization"));
+
+		UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+		urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+
+		return urlBasedCorsConfigurationSource;
+	}
+
+	@Bean
+	public CorsFilter corsFilter() {
+		return new CorsFilter(corsConfigurationSource());
+	}
+
+	// @Bean
+	// public CorsFilter corsFilter() {
+	// 	CorsConfiguration corsConfiguration = new CorsConfiguration();
+
+	// 	corsConfiguration.addAllowedOrigin("*");
+	// 	corsConfiguration.addAllowedHeader("*");
+	// 	corsConfiguration.addAllowedMethod("*");
+
+	// 	UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+	// 	urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+
+	// 	return new CorsFilter(urlBasedCorsConfigurationSource);
+	// }
 }
