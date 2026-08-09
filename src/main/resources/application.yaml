@@ -8,7 +8,7 @@ server:
 # config connect to mysql database
 spring:
   datasource: 
-    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/identity_service}
+    url: ${DBMS_CONNECTION:jdbc:mysql://mysql:3306/identity_service}
     username: ${DBMS_USERNAME:root}
     password: ${DBMS_PASSWORD:12345}
     #jpa tự động tạo bảng nếu chưa tồn tại
